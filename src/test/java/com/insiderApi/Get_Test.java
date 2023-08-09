@@ -33,7 +33,7 @@ public class Get_Test {
     }
 
     @DisplayName("Negative testing GET request to /pet/findByStatus")
-//as a value "ready" is not written in swagger document for queryParam. You can not get any info in response the body,
+    @Test //as a value "ready" is not written in swagger document for queryParam. You can not get any info in response the body,
     public void getMethod_queryParam2() {
         Response response = given().accept(ContentType.JSON)
                 .and().queryParam("status", "ready")
@@ -62,5 +62,20 @@ public class Get_Test {
 
     }
 
+
+    @DisplayName("Negative testing GET request to /pet/{petID}")
+    @Test // there is no pet wit petID 250000000
+    public void getMethod_pathParam2() {
+        Response response = given().accept(ContentType.JSON)
+                .and().pathParam("petId", 250000000)
+                .when()
+                .get("/pet/{petId}");
+
+        JsonPath jsonPath = response.jsonPath(); //you are putting the response body to jsonPath Object
+        assertEquals(404, response.statusCode());
+        assertEquals("application/json", response.contentType());
+        assertEquals("error", jsonPath.getString("type"));
+
+    }
 
 }

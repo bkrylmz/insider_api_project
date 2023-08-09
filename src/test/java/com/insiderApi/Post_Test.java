@@ -34,6 +34,21 @@ public class Post_Test {
     }
 
 
+    @DisplayName("Negative POST /pet/{petId}/uploadImage")
+    @Test // it can not be uploaded image because image's path way is not written. Test failed
+    public void postPetId_UploadImage2() {
+
+        RestAssured.given()
+                .pathParam("petId", 485)
+                .contentType(ContentType.MULTIPART)
+                .multiPart("additionalMetadata", "cat image3")
+                .multiPart("file", new File(""))
+                .when()
+                .post("/pet/{petId}/uploadImage");
+    }
+
+
+
     @DisplayName("Positive POST /pet")
     @Test
     public void postRequest_WithHamcrest() {
@@ -68,7 +83,7 @@ public class Post_Test {
     }
 
 
-    @DisplayName("Negative POST /pet") // wrong type. TEXT is not written swagger document (POST)
+    @DisplayName("Negative POST /pet") // wrong content type. TEXT is not written swagger document (POST)
     @Test
     public void postRequest2() {
         given().contentType(ContentType.TEXT)

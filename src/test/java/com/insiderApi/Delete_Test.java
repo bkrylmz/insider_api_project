@@ -50,17 +50,16 @@ public class Delete_Test {
     }
 
 
-    @DisplayName("Negative Delete Test /pet/{petId}")//there is no id parameter which is equal to 40
+    @DisplayName("Negative Delete Test /pet/{petId}")//there is no id parameter which is equal to 40 it can not be deleted
     @Test
     public void delete2() {
-        Response response = given().accept(ContentType.JSON)
+       Response response = given().accept(ContentType.JSON)
                 .and()
                 .pathParam("petId", 40)
                 .when().delete("/pet/{petId}");
-                //.delete("/pet/{petId}");
 
-        assertThat(response.getStatusCode(), not(equalTo(200)));
-       // assertEquals(404, response.getStatusCode());
+
+        assertEquals(404, response.getStatusCode());
         assertEquals("application/json", response.contentType());
 
     }
