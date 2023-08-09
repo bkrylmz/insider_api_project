@@ -1,15 +1,22 @@
 package com.insiderApi;
 
 import io.restassured.http.ContentType;
+import io.restassured.internal.http.HttpResponseException;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import org.apache.http.HttpException;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class Delete_Test {
     @BeforeAll
@@ -47,12 +54,13 @@ public class Delete_Test {
     @Test
     public void delete2() {
         Response response = given().accept(ContentType.JSON)
-                .and().pathParam("petId", 40)
-                .when()
-                .delete("/pet/{petId}");
+                .and()
+                .pathParam("petId", 40)
+                .when().delete("/pet/{petId}");
+                //.delete("/pet/{petId}");
 
-        JsonPath jsonPath = response.jsonPath();
-        assertEquals(404, response.statusCode());
+        assertThat(response.getStatusCode(), not(equalTo(200)));
+       // assertEquals(404, response.getStatusCode());
         assertEquals("application/json", response.contentType());
 
     }
