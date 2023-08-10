@@ -1,11 +1,8 @@
-package com.insiderApi;
+package com.crudTest;
 
 import io.restassured.http.ContentType;
-import io.restassured.internal.http.HttpResponseException;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.apache.http.HttpException;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

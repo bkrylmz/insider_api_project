@@ -1,4 +1,4 @@
-package com.insiderApi;
+package com.crudTest;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -30,7 +30,8 @@ public class Post_Test {
                 .post("/pet/{petId}/uploadImage")
                 .then()
                 .assertThat()
-                .statusCode(200);
+                .statusCode(200)
+                .contentType(ContentType.JSON);
     }
 
 
