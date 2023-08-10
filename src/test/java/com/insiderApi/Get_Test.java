@@ -6,8 +6,10 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -20,31 +22,37 @@ public class Get_Test {
     @DisplayName("Positive testing GET request to /pet/findByStatus")
     @Test
     public void getMethod_queryParam() {
-        Response response = given().accept(ContentType.JSON)
-                .and().queryParam("status", "sold")
-                .log().all()
+        given().accept(ContentType.JSON)
+                .and()
+                .queryParam("status", "sold")
                 .when()
-                .get("/pet/findByStatus");
+                .get("/pet/findByStatus")
+                .then()
+                .statusCode(200)
+                .and()
+                .contentType("application/json")
+                .and()
+                .body("status", everyItem(is("sold")))
+                .log().all();
 
-        assertEquals(200, response.statusCode());
-        assertEquals("application/json", response.header("Content-Type"));
-        assertTrue(response.body().asString().contains("sold"));
-        response.prettyPrint();
+
     }
 
     @DisplayName("Negative testing GET request to /pet/findByStatus")
-    @Test //as a value "ready" is not written in swagger document for queryParam. You can not get any info in response the body,
+    @Test
+    //as a value "ready" is not written in swagger document for queryParam. You can not get any info in response the body,
     public void getMethod_queryParam2() {
-        Response response = given().accept(ContentType.JSON)
-                .and().queryParam("status", "ready")
-                .log().all()
+        given().accept(ContentType.JSON)
+                .and().
+                queryParam("status", "ready")
                 .when()
-                .get("/pet/findByStatus");
+                .get("/pet/findByStatus")
+                .then()
+                .statusCode(not(equalTo(200))) // because according to swagger pet document "available" "pending" "sold" parameters are only the available values so the status can not be 200
+                .and()
+                .contentType("application/json")
+                .log().all();
 
-        assertEquals(200, response.statusCode());
-        assertEquals("application/json", response.header("Content-Type"));
-        assertTrue(response.body().asString().contains(""));
-        response.prettyPrint();
     }
 
     @DisplayName("Positive testing GET request to /pet/{petID}")
@@ -71,9 +79,10 @@ public class Get_Test {
                 .when()
                 .get("/pet/{petId}");
 
-        JsonPath jsonPath = response.jsonPath(); //you are putting the response body to jsonPath Object
         assertEquals(404, response.statusCode());
         assertEquals("application/json", response.contentType());
+
+        JsonPath jsonPath = response.jsonPath();
         assertEquals("error", jsonPath.getString("type"));
 
     }
