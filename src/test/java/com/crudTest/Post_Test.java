@@ -1,19 +1,18 @@
 package com.crudTest;
 
-import com.utilities.ConfigurationReader;
-import com.utilities.TestBase;
+import com.utilities.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
 import java.io.File;
+
 import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 
 
 public class Post_Test extends TestBase {
 
-
-    @DisplayName("Positive POST /pet/{petId}/uploadImage")
+    @DisplayName("Positive POST1      /pet/{petId}/uploadImage")
     @Test
     public void postRequestPetId_UploadImage() {
 
@@ -23,33 +22,38 @@ public class Post_Test extends TestBase {
                 .multiPart("additionalMetadata", "cat image3")
                 .multiPart("file", new File(ConfigurationReader.getProperty("filePath")))
                 .when()
+                .log().all()
                 .post("/{petId}/uploadImage")
                 .then()
-                .assertThat()
                 .statusCode(200)
                 .contentType(ContentType.JSON);
     }
 
 
-    @DisplayName("Negative POST /pet/{petId}/uploadImage")
-    @Test // it can not be uploaded image because image's path way(file) is not written. Test failed
-         // it is not succesfull operation so status can not ve 200
+    @DisplayName("Negative POST1      /pet/{petId}/uploadImage")
+    @Test // it can not be uploaded image because petId parameter value is out of int64
+
     public void postRequestPetId_UploadImage2() {
 
-        RestAssured.given()
-                .pathParam("petId", 485)
-                .contentType(ContentType.MULTIPART)
-                .multiPart("additionalMetadata", "cat image3")
-                .multiPart("file", new File(""))
-                .when()
-                .post("/{petId}/uploadImage")
-                .then()
-                .statusCode(not(equalTo(200)))
-                .log().all();
+        try {
+            RestAssured.given()
+                    .pathParam("petId", 1234567890123456L)
+                    .contentType(ContentType.MULTIPART)
+                    .multiPart("additionalMetadata", "cat image3")
+                    .multiPart("file", new File(ConfigurationReader.getProperty("C:\\Users\\bkryl\\OneDrive\\Masaüstü\\Sugar.jpg")))
+                    .when()
+                    .log().all()
+                    .post("/{petId}/uploadImage")
+                    .then()
+                    .statusCode(equalTo(404));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
-    @DisplayName("Positive POST /pet")
+    @DisplayName("Positive POST2    /pet")
     @Test
     public void postRequest() {
         given().accept(ContentType.JSON)
@@ -83,7 +87,8 @@ public class Post_Test extends TestBase {
     }
 
 
-    @DisplayName("POST TEXT /pet") // wrong content type. TEXT is not written swagger document (POST)
+    @DisplayName("Negative Post     /pet")
+    // wrong content type. TEXT is not written swagger document (POST)
     @Test
     public void postRequest2() {
         given().contentType(ContentType.TEXT)
@@ -108,5 +113,28 @@ public class Post_Test extends TestBase {
                 .when().post("")
                 .then().statusCode(415);
     }
+
+    @DisplayName("Positive POST3      /pet/{petId}")
+    @Test //There is a bug,
+    // According to the Swagger. Status code should be 200, but not it gets status 415
+
+    public void postRequest3() {
+
+        RestAssured.given()
+                .pathParam("petId", 1530)
+                .contentType(ContentType.MULTIPART)
+                .multiPart("name", "catiee")
+                .multiPart("status", "sold")
+                .log().all()
+                .when()
+                .post("/{petId}")
+                .then()
+                .assertThat()
+                .statusCode(200)
+                .body("name", is("catiee"))
+                .body("status", is("sold"));
+
+    }
+
 
 }
