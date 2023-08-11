@@ -16,7 +16,7 @@ public class Delete_Test extends TestBase {
     @Test
     public void deleteTest1() {
         Response response = given().accept(ContentType.JSON)
-                .and().pathParam("petId", 767767)
+                .and().pathParam("petId", 19)
                 .when()
                 .delete("/{petId}");
 
@@ -33,7 +33,7 @@ public class Delete_Test extends TestBase {
         assertEquals("application/json", response.contentType());
         assertEquals(200, jsonPath.getInt("code"));
         assertEquals("unknown", jsonPath.getString("type"));
-        assertEquals("767767", jsonPath.getString("message"));
+        assertEquals("19", jsonPath.getString("message"));
 
         // When we run this test, the pet with ID number 767767 will be deleted,
         // I am recreating a pet with the same ID number using a POST request.
@@ -41,7 +41,7 @@ public class Delete_Test extends TestBase {
         given().accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body("{\n" +
-                        "  \"id\": 767767,\n" +
+                        "  \"id\": 19,\n" +
                         "  \"category\": {\n" +
                         "    \"id\": 111222333444,\n" +
                         "    \"name\": \"Lemon3\"\n" +
@@ -61,7 +61,7 @@ public class Delete_Test extends TestBase {
                 .when().post("")
                 .then().statusCode(200).contentType("application/json")
                 .body(
-                        "id", is(767767),
+                        "id", is(19),
                         "category.name", equalTo("Lemon3"),
                         "name", is(equalTo("doggiessss")),
                         "name", startsWithIgnoringCase("do"),
@@ -87,7 +87,7 @@ public class Delete_Test extends TestBase {
         }
     }
 
-    @DisplayName("Negative Delete Test2 /pet/{petId}")
+    @DisplayName("Bug Negative Delete Test2 /pet/{petId}")
     @Test//There is a bug.According to the Swagger status should be 400 invalid id supplied.
     // (Because ıd accept int64, but we pass more than that) But We get as a status 404.
     public void deleteTest3() {

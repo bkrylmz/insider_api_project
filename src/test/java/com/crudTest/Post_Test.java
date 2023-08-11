@@ -91,7 +91,7 @@ public class Post_Test extends TestBase {
                 .then().statusCode(415);
     }
 
-    @DisplayName("Positive POST3      /pet/{petId}")
+    @DisplayName("Bug Positive POST3      /pet/{petId}")
     @Test //There is a bug,
     // According to the Swagger. Status code should be 200, but not it gets status 415
 

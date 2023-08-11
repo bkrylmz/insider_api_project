@@ -53,7 +53,7 @@ public class Get_Test extends TestBase {
                 .log().all();
     }
 
-    @DisplayName("Negative testing1 GET     /pet/findByStatus")
+    @DisplayName("Bug Negative testing1 GET     /pet/findByStatus")
     @Test
     // There is a bug. ready is not a valid access. "ready" is not written in swagger document as a value.
     // And status must be 400 but not status is 200
@@ -75,14 +75,14 @@ public class Get_Test extends TestBase {
     @Test
     public void get_pathParam1() {
         Response response = given().accept(ContentType.JSON)
-                .and().pathParam("petId", 767863)
+                .and().pathParam("petId", 19)
                 .when()
                 .get("/{petId}");
 
         JsonPath jsonPath = response.jsonPath(); //you are putting the response body to jsonPath Object
         assertEquals(200, response.statusCode());
         assertEquals("application/json", response.contentType());
-        assertEquals(767863, jsonPath.getInt("id"));
+        assertEquals(19, jsonPath.getInt("id"));
     }
 
 
@@ -106,7 +106,7 @@ public class Get_Test extends TestBase {
         }
     }
 
-    @DisplayName("Negative testing3 GET   /pet/{petID} invalid id")
+    @DisplayName("Bug Negative testing3 GET   /pet/{petID} invalid id")
     @Test // There is a bug
     // According to the swagger,we should get 400 for invalid id (in this test we use bigger than int64)
     // but we get 404
