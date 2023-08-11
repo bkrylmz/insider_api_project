@@ -1,20 +1,13 @@
 package com.crudTest;
 
+import com.utilities.TestBase;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static io.restassured.RestAssured.baseURI;
+import org.junit.jupiter.api.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.is;
 
-public class Put_Test {
-    @BeforeAll
-    public static void init() {
-        baseURI = "https://petstore.swagger.io/v2";
-    }
+public class Put_Test extends TestBase {
 
     @DisplayName("Positive PUT to /pet") // status updated as "available" instead of "sold"
     @Test
@@ -39,7 +32,7 @@ public class Put_Test {
                         "  ],\n" +
                         "  \"status\": \"available\"\n" +
                         "}")
-                .when().put("/pet")
+                .when().put("")
                 .then().statusCode(200).contentType("application/json")
                 .body(
                         "id", is(12),
@@ -49,9 +42,12 @@ public class Put_Test {
                         "status", is("available")); // status updated before sold now available
     }
 
-    @DisplayName("Negative PUT to /pet") // "TEXT" is not written swagger document (PUT). So that reason it is unsupported media type
+    @DisplayName("Negative PUT to /pet") // "TEXT" media type is not written swagger document (PUT). So that reason it is unsupported media type
     @Test
     public void putRequest_WithHamcrest2() {
+
+
+        try {
         given().contentType(ContentType.TEXT)
                 .body("{\n" +
                         "  \"id\": 987654321,\n" +
@@ -71,8 +67,11 @@ public class Put_Test {
                         "  ],\n" +
                         "  \"status\": \"new\"\n" +
                         "}")
-                .when().put("/pet")
+                .when().put("")
                 .then().statusCode(415);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

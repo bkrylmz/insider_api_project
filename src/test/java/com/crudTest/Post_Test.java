@@ -1,33 +1,29 @@
 package com.crudTest;
 
+import com.utilities.ConfigurationReader;
+import com.utilities.TestBase;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import java.io.File;
-import static io.restassured.RestAssured.baseURI;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
-import static org.hamcrest.Matchers.is;
 
-public class Post_Test {
-    @BeforeAll
-    public static void init() {
-        baseURI = "https://petstore.swagger.io/v2";
-    }
+
+public class Post_Test extends TestBase {
+
 
     @DisplayName("Positive POST /pet/{petId}/uploadImage")
     @Test
-    public void postPetId_UploadImage() {
+    public void postRequestPetId_UploadImage() {
 
         RestAssured.given()
                 .pathParam("petId", 485)
                 .contentType(ContentType.MULTIPART)
                 .multiPart("additionalMetadata", "cat image3")
-                .multiPart("file", new File("C:\\Users\\bkryl\\OneDrive\\Masaüstü\\Sugar.jpg"))
+                .multiPart("file", new File(ConfigurationReader.getProperty("filePath")))
                 .when()
-                .post("/pet/{petId}/uploadImage")
+                .post("/{petId}/uploadImage")
                 .then()
                 .assertThat()
                 .statusCode(200)
@@ -36,8 +32,9 @@ public class Post_Test {
 
 
     @DisplayName("Negative POST /pet/{petId}/uploadImage")
-    @Test // it can not be uploaded image because image's path way is not written. Test failed
-    public void postPetId_UploadImage2() {
+    @Test // it can not be uploaded image because image's path way(file) is not written. Test failed
+         // it is not succesfull operation so status can not ve 200
+    public void postRequestPetId_UploadImage2() {
 
         RestAssured.given()
                 .pathParam("petId", 485)
@@ -45,14 +42,16 @@ public class Post_Test {
                 .multiPart("additionalMetadata", "cat image3")
                 .multiPart("file", new File(""))
                 .when()
-                .post("/pet/{petId}/uploadImage");
+                .post("/{petId}/uploadImage")
+                .then()
+                .statusCode(not(equalTo(200)))
+                .log().all();
     }
-
 
 
     @DisplayName("Positive POST /pet")
     @Test
-    public void postRequest_WithHamcrest() {
+    public void postRequest() {
         given().accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body("{\n" +
@@ -73,7 +72,7 @@ public class Post_Test {
                         "  ],\n" +
                         "  \"status\": \"sold\"\n" +
                         "}")
-                .when().post("/pet")
+                .when().post("")
                 .then().statusCode(200).contentType("application/json")
                 .body(
                         "id", is(13233343),
@@ -84,7 +83,7 @@ public class Post_Test {
     }
 
 
-    @DisplayName("Negative POST /pet") // wrong content type. TEXT is not written swagger document (POST)
+    @DisplayName("POST TEXT /pet") // wrong content type. TEXT is not written swagger document (POST)
     @Test
     public void postRequest2() {
         given().contentType(ContentType.TEXT)
@@ -106,7 +105,7 @@ public class Post_Test {
                         "  ],\n" +
                         "  \"status\": \"new\"\n" +
                         "}")
-                .when().post("/pet")
+                .when().post("")
                 .then().statusCode(415);
     }
 

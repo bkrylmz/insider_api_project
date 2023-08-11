@@ -4,19 +4,14 @@ import com.utilities.TestBase;
 import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
 import java.util.List;
-
-import static io.restassured.RestAssured.baseURI;
-import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public class Get_Test extends TestBase {
 
@@ -32,7 +27,7 @@ public class Get_Test extends TestBase {
 
         assertEquals(200, response.statusCode());
         assertEquals("application/json", response.header("Content-Type"));
-        List<String> status = response.path(s);
+        List<String> status = response.path("status");
         for (String stat : status) {
             assertEquals(s,stat);
         }
@@ -70,12 +65,10 @@ public class Get_Test extends TestBase {
                 .then()
                 .statusCode(not(equalTo(200)))
                 // According to the swagger pet document, available values for status are "available", "pending" and "sold".
-                // "ready" is not one of them, so the status can not be 200,
-                // According the swagger pet document invalid status value is,
+                // "ready" is invalid status value, so the status code can not be 200, but status code is 200
                 // because of that reason our test failed. There is a bug
                 .and()
-                .contentType("application/json")
-                .log().all();
+                .contentType("application/json");
     }
 
     @DisplayName("Positive testing GET request to /pet/{petID}")
