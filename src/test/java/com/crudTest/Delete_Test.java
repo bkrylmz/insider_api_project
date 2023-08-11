@@ -35,7 +35,7 @@ public class Delete_Test extends TestBase {
         assertEquals("unknown", jsonPath.getString("type"));
         assertEquals("767767", jsonPath.getString("message"));
 
-        // When we run this test, since the pet with ID number 767767 will be deleted,
+        // When we run this test, the pet with ID number 767767 will be deleted,
         // I am recreating a pet with the same ID number using a POST request.
         // This way, when we run this test again, it will not fail.
         given().accept(ContentType.JSON)
@@ -87,19 +87,19 @@ public class Delete_Test extends TestBase {
         }
     }
 
-        @DisplayName("Negative Delete Test2 /pet/{petId}")
-        @Test//There is a bug.According to the Swagger status should be 400 invalid id supplied.
-        // (Because ıd accept int64, but we pass more than that) But We get as a status 404.
-        public void deleteTest3 () {
+    @DisplayName("Negative Delete Test2 /pet/{petId}")
+    @Test//There is a bug.According to the Swagger status should be 400 invalid id supplied.
+    // (Because ıd accept int64, but we pass more than that) But We get as a status 404.
+    public void deleteTest3() {
 
-            Response response = given().accept(ContentType.JSON)
-                    .and()
-                    .pathParam("petId", 1234567890123456L)
-                    .when().delete("/{petId}");
+        Response response = given().accept(ContentType.JSON)
+                .and()
+                .pathParam("petId", 1234567890123456L)
+                .log().all()
+                .when().delete("/{petId}");
 
+        assertEquals(400, response.getStatusCode());
+        assertEquals("application/json", response.contentType());
 
-            assertEquals(400, response.getStatusCode());
-            assertEquals("application/json", response.contentType());
-
-        }
     }
+}

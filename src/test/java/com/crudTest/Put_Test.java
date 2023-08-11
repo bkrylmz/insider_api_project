@@ -11,7 +11,8 @@ public class Put_Test extends TestBase {
 
     @DisplayName("Positive PUT to /pet") // status updated as "available" instead of "sold"
     @Test
-    public void putRequest_WithHamcrest() {
+    public void putRequest1() {
+
         given().accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body("{\n" +
@@ -45,7 +46,6 @@ public class Put_Test extends TestBase {
     @DisplayName("Negative PUT to /pet") // "TEXT" media type is not written swagger document (PUT). So that reason it is unsupported media type
     @Test
     public void putRequest_WithHamcrest2() {
-
 
         try {
         given().contentType(ContentType.TEXT)

@@ -5,7 +5,7 @@ import io.restassured.http.ContentType;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.*;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
@@ -69,22 +69,20 @@ public class Get_Test extends TestBase {
         // According to the swagger pet document, available values for status are "available", "pending" and "sold".
         // "ready" is invalid status value, so status code can not be 200, but status code is 200
         // because of that reason our test failed. There is a bug
-
     }
 
     @DisplayName("Positive testing3 GET    /pet/{petID}")
     @Test
     public void get_pathParam1() {
         Response response = given().accept(ContentType.JSON)
-                .and().pathParam("petId", 767767)//456765
+                .and().pathParam("petId", 767863)
                 .when()
                 .get("/{petId}");
 
         JsonPath jsonPath = response.jsonPath(); //you are putting the response body to jsonPath Object
         assertEquals(200, response.statusCode());
         assertEquals("application/json", response.contentType());
-        assertEquals(767767, jsonPath.getInt("id"));
-
+        assertEquals(767863, jsonPath.getInt("id"));
     }
 
 
@@ -106,7 +104,6 @@ public class Get_Test extends TestBase {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @DisplayName("Negative testing3 GET   /pet/{petID} invalid id")
@@ -120,8 +117,6 @@ public class Get_Test extends TestBase {
                 .get("/{petId}");
         assertEquals(400, response.statusCode());
         assertEquals("application/json", response.contentType());
-
     }
-
 
 }

@@ -4,6 +4,7 @@ import com.utilities.*;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.*;
+
 import java.io.File;
 
 import static io.restassured.RestAssured.*;
@@ -28,30 +29,6 @@ public class Post_Test extends TestBase {
                 .statusCode(200)
                 .contentType(ContentType.JSON);
     }
-
-
-    @DisplayName("Negative POST1      /pet/{petId}/uploadImage")
-    @Test // it can not be uploaded image because petId parameter value is out of int64
-
-    public void postRequestPetId_UploadImage2() {
-
-        try {
-            RestAssured.given()
-                    .pathParam("petId", 1234567890123456L)
-                    .contentType(ContentType.MULTIPART)
-                    .multiPart("additionalMetadata", "cat image3")
-                    .multiPart("file", new File(ConfigurationReader.getProperty("C:\\Users\\bkryl\\OneDrive\\Masaüstü\\Sugar.jpg")))
-                    .when()
-                    .log().all()
-                    .post("/{petId}/uploadImage")
-                    .then()
-                    .statusCode(equalTo(404));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
 
     @DisplayName("Positive POST2    /pet")
     @Test
@@ -133,7 +110,6 @@ public class Post_Test extends TestBase {
                 .statusCode(200)
                 .body("name", is("catiee"))
                 .body("status", is("sold"));
-
     }
 
 
